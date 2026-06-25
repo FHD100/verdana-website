@@ -1,19 +1,19 @@
 const root = document.documentElement;
-const header = document.querySelector("[data-scroll-header]");
+const header = document.querySelector("[data-header]");
 const revealItems = document.querySelectorAll(".reveal");
 
 let ticking = false;
 
-function updateScrollEffects() {
+function updateScrollState() {
   const scrollY = window.scrollY || 0;
   root.style.setProperty("--scroll", scrollY.toFixed(2));
-  header.classList.toggle("is-scrolled", scrollY > 24);
+  header.classList.toggle("is-scrolled", scrollY > 18);
   ticking = false;
 }
 
-function requestScrollUpdate() {
+function queueScrollUpdate() {
   if (!ticking) {
-    window.requestAnimationFrame(updateScrollEffects);
+    window.requestAnimationFrame(updateScrollState);
     ticking = true;
   }
 }
@@ -27,10 +27,10 @@ const revealObserver = new IntersectionObserver(
       }
     });
   },
-  { threshold: 0.18 }
+  { threshold: 0.14 }
 );
 
 revealItems.forEach((item) => revealObserver.observe(item));
-window.addEventListener("scroll", requestScrollUpdate, { passive: true });
-window.addEventListener("resize", requestScrollUpdate);
-updateScrollEffects();
+window.addEventListener("scroll", queueScrollUpdate, { passive: true });
+window.addEventListener("resize", queueScrollUpdate);
+updateScrollState();
